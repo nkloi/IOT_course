@@ -1,0 +1,99 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Lights Control - Smart Home IoT{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>💡 Lights Control</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: #d4edda; color: #155724; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #c3e6cb;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        {% for light in lights %}
+        <div class="card" style="border: 2px solid {% if light.is_on %}#28a745{% else %}#6c757d{% endif %};">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; color: {% if light.is_on %}#28a745{% else %}#6c757d{% endif %};">
+                        {{ light.device.name }}
+                    </h3>
+                    <p style="margin: 5px 0; color: #666;">
+                        📍 {{ light.device.room.name }}
+                    </p>
+                    <p style="margin: 5px 0; font-size: 0.9em; color: #888;">
+                        ID: {{ light.device.device_id }}
+                    </p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 10px;">
+                        {% if light.is_on %}
+                            💡
+                        {% else %}
+                            🔌
+                        {% endif %}
+                    </div>
+                    <div style="font-weight: bold; color: {% if light.is_on %}#28a745{% else %}#dc3545{% endif %};">
+                        {% if light.is_on %}ON{% else %}OFF{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="{% url 'myapp:toggle_light' light.id %}"
+                   style="display: inline-block; padding: 10px 20px; background: {% if light.is_on %}#dc3545{% else %}#28a745{% endif %};
+                          color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    {% if light.is_on %}
+                        🔴 Turn OFF
+                    {% else %}
+                        🟢 Turn ON
+                    {% endif %}
+                </a>
+            </div>
+
+            <div style="margin-top: 10px; font-size: 0.8em; color: #888; text-align: center;">
+                Last updated: {{ light.last_updated|date:"Y-m-d H:i:s" }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; color: #666;">
+            <h3>No lights found</h3>
+            <p>Add some lights in the admin panel to control them here.</p>
+            <a href="/admin/myapp/lightstatus/add/" style="color: #007bff;">➕ Add Light</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>🔧 Quick Actions</h3>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button onclick="toggleAllLights(true)"
+                style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🟢 Turn All ON
+        </button>
+        <button onclick="toggleAllLights(false)"
+                style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🔴 Turn All OFF
+        </button>
+        <a href="{% url 'myapp:lights_api' %}" target="_blank"
+           style="padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+            📊 View API Data
+        </a>
+    </div>
+</div>
+
+<script>
+function toggleAllLights(turnOn) {
+    // This is a simple implementation - in a real app, you'd use AJAX
+    const action = turnOn ? 'Turn all lights ON' : 'Turn all lights OFF';
+    if (confirm(`Are you sure you want to ${action}?`)) {
+        alert('Feature coming soon! Use individual toggles for now.');
+    }
+}
+</script>
+{% endblock %}

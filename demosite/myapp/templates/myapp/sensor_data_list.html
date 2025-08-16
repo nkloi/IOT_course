@@ -1,0 +1,53 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Sensor Data - Smart Home IoT{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Sensor Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>Sensor Type</th>
+                <th>Value</th>
+                <th>Unit</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in sensor_data %}
+            <tr>
+                <td>{{ data.device.name }}</td>
+                <td>{{ data.get_sensor_type_display }}</td>
+                <td>{{ data.value }}</td>
+                <td>{{ data.unit|default:"-" }}</td>
+                <td>{{ data.timestamp|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No sensor data found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div style="margin-top: 1rem; text-align: center;">
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="?page=1">« first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">‹ previous</a>
+            {% endif %}
+
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next ›</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last »</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

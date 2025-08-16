@@ -1,0 +1,83 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Home - Smart Home IoT{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Dashboard</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        <div class="card" style="text-align: center;">
+            <h3>Total Rooms</h3>
+            <h1 style="color: #007bff;">{{ rooms.count }}</h1>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h3>Total Devices</h3>
+            <h1 style="color: #28a745;">{{ devices.count }}</h1>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h3>Recent Data Points</h3>
+            <h1 style="color: #ffc107;">{{ recent_data.count }}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Device Status</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.name }}</td>
+                <td>{{ device.room.name }}</td>
+                <td>
+                    <span class="status-{{ device.status }}">
+                        {{ device.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ device.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No devices found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Recent Sensor Data</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>Sensor Type</th>
+                <th>Value</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in recent_data %}
+            <tr>
+                <td>{{ data.device.name }}</td>
+                <td>{{ data.get_sensor_type_display }}</td>
+                <td>{{ data.value }} {{ data.unit }}</td>
+                <td>{{ data.timestamp|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No sensor data found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

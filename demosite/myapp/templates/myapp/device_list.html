@@ -1,0 +1,39 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Devices - Smart Home IoT{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Devices</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Device ID</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.name }}</td>
+                <td><code>{{ device.device_id }}</code></td>
+                <td>{{ device.room.name }}</td>
+                <td>
+                    <span class="status-{{ device.status }}">
+                        {{ device.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ device.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No devices found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
